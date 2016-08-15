@@ -1,0 +1,8 @@
+%{"decorators": {:git, "git://github.com/chrisavl/erlang_decorators.git", "b14949efc938157604447adc29a71913298fe67f", [branch: "master"]},
+  "jiffy": {:git, "https://github.com/davisp/jiffy.git", "4c0bfbc0fa0de12dcc4ff263888eeaa431ae6ed2", [ref: "master"]},
+  "lhttpc": {:git, "git://github.com/ferd/lhttpc.git", "28d5562be7e53576b624a6f82deac7303ce8f2dd", [ref: "master"]},
+  "mime": {:hex, :mime, "1.0.1", "05c393850524767d13a53627df71beeebb016205eb43bfbd92d14d24ec7a1b51", [:mix], []},
+  "newrelic": {:git, "https://github.com/wooga/newrelic-erlang.git", "ce63c4a69561d3677f45334ba2c93876b4661229", []},
+  "parse_trans": {:git, "git://github.com/uwiger/parse_trans.git", "6f3645afb43c7c57d61b54ef59aecab288ce1013", [branch: "master"]},
+  "plug": {:hex, :plug, "1.2.0", "496bef96634a49d7803ab2671482f0c5ce9ce0b7b9bc25bc0ae8e09859dd2004", [:mix], [{:cowboy, "~> 1.0", [hex: :cowboy, optional: true]}, {:mime, "~> 1.0", [hex: :mime, optional: false]}]},
+  "statman": {:git, "git://github.com/knutin/statman.git", "e6ff10815eac1e613b619e69db06d635f1a4a488", [ref: "master"]}}
