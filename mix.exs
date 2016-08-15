@@ -11,8 +11,8 @@ defmodule NewrelicElx.Mixfile do
       start_permanent: Mix.env == :prod,
       deps: deps,
       description: "NewRelic monitoring and error tracking for Elixir",
-      source_url: "https://github.com/damariei/newrelic-elx",
-      homepage_url: "https://github.com/damariei/newrelic-elx",
+      source_url: "https://github.com/damariei/newrelic_elx",
+      homepage_url: "https://github.com/damariei/newrelic_elx",
       package: package,
       docs: [
         extras: ["README.md"],
@@ -35,7 +35,7 @@ defmodule NewrelicElx.Mixfile do
 
   defp package do
     %{ licenses: ["BSD 3-Clause"],
-       links: %{"Github" => "https://github.com/damariei/newrelic-elx"}
+       links: %{"Github" => "https://github.com/damariei/newrelic_elx"}
      }
   end
 end
