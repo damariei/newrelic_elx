@@ -5,6 +5,9 @@ defmodule NewRelicElx.Plug.WebLogger do
 
   import Plug.Conn
 
+  def init(_) do
+  end
+
   def call(conn, _opts) do
     transaction_name = "#{conn.request_path}##{conn.method}"
 
