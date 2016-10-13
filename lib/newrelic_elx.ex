@@ -21,7 +21,6 @@ defmodule NewrelicElx do
       Logger.info "Started NewRelic Monitoring."
     end
 
-      {:ok, self}
-    end
+    {:ok, self}
   end
 end
