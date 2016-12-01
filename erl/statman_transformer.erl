@@ -7,6 +7,7 @@
 
 poll() ->
     {ok, Metrics} = statman_aggregator:get_window(60),
+    statman_histogram:gc(),
     transform_aggregated_metrics(Metrics).
 
 
