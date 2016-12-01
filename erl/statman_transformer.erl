@@ -7,7 +7,8 @@
 
 poll() ->
     {ok, Metrics} = statman_aggregator:get_window(60),
-    statman_histogram:gc(),
+    ets:delete_all_objects(statman_histograms),
+    ets:delete_all_objects(statman_counters),
     transform_aggregated_metrics(Metrics).
 
 
