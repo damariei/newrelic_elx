@@ -23,12 +23,16 @@ defmodule NewrelicElx.Mixfile do
 
   def application do
     [ mod: { NewrelicElx, [] },
-      applications: [ :logger, :newrelic ]
+      applications: [ :logger, :exmetrics, :httpotion ]
     ]
   end
 
   defp deps do
-    [ {:newrelic, git: "https://github.com/wooga/newrelic-erlang.git"},
+    [ {:httpotion, "~> 3.0.2"},
+      {:jiffy, "~> 0.14.11"},
+      {:poison, "~> 3.0"},
+      {:exmetrics, "~> 1.0"},
+      {:hdr_histogram, git: "https://github.com/HdrHistogram/hdr_histogram_erl.git", tag: "0.2.6"},
       {:plug, "~> 1.0"}
     ]
   end

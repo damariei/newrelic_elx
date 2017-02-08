@@ -1,4 +1,4 @@
-defmodule NewRelicElx.Plug.WebLogger do
+defmodule NewrelicElx.Plug.WebLogger do
   @moduledoc """
   Custom Plug to automatically record all web requests as NewRelic transactions
   """

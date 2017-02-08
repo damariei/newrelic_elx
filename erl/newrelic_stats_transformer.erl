@@ -1,14 +1,13 @@
-% Statman Stats Transformer
-% Original: https://github.com/wooga/newrelic-erlang/blob/master/src/newrelic_statman.erl
-% Improvements: Stacktraces, improved metrics
+% Stats Transformer
+% Based On: https://github.com/wooga/newrelic-erlang/blob/master/src/newrelic_statman.erl
+% Improvements: stacktraces, improved metrics
 
--module(statman_transformer).
+-module(newrelic_stats_transformer).
 -compile([export_all]).
 
 poll() ->
-    {ok, Metrics} = statman_aggregator:get_window(60),
-    ets:delete_all_objects(statman_histograms),
-    ets:delete_all_objects(statman_counters),
+    Metrics = maps:to_list(maps:get(counters, 'Elixir.Exmetrics':snapshot())),
+    'Elixir.Exmetrics':reset(),
     transform_aggregated_metrics(Metrics).
 
 
@@ -21,8 +20,12 @@ transform_aggregated_metrics(Metrics) ->
 
     Counters = lists:filter(
                    fun (Metric) ->
-                           proplists:get_value(type, Metric) =:= counter andalso
-                               (not is_list(proplists:get_value(node, Metric)))
+                     case Metric of
+                       {{_Scope, {error, {_, _, _}}}, _Value} ->
+                         true;
+                       _ ->
+                         false
+                      end
                    end,
                    Metrics),
     Errs = lists:flatmap(
@@ -35,59 +38,47 @@ transform_aggregated_metrics(Metrics) ->
 
 
 transform_error_counter(Metric) ->
-    case proplists:get_value(key, Metric) of
-        {Scope, {error, {Type, Message, StackTrace}}} when is_binary(Scope) ->
-            {MegaSecs, Secs, MicroSecs} = os:timestamp(),
-            Error = [MegaSecs * 1000000 + Secs + MicroSecs / 1000000,
-                     scope2bin(Scope),
-                     to_bin(Message),
-                     to_bin(Type),
-                     {[{<<"parameter_groups">>,{[]}},
-                        {<<"stack_trace">>, StackTrace},
-                        {<<"request_params">>, {[]}},
-                        {<<"request_uri">>, Scope}
-                      ]}],
-            lists:duplicate(proplists:get_value(value, Metric), Error);
-
-        _ ->
-            []
-    end.
+    {{Scope, {error, {Type, Message, StackTrace}}}, Value} = Metric,
+    {MegaSecs, Secs, MicroSecs} = os:timestamp(),
+    Error = [MegaSecs * 1000000 + Secs + MicroSecs / 1000000,
+             scope2bin(Scope),
+             to_bin(Message),
+             to_bin(Type),
+             {[{<<"parameter_groups">>,{[]}},
+                {<<"stack_trace">>, StackTrace},
+                {<<"request_params">>, {[]}},
+                {<<"request_uri">>, Scope}
+              ]}],
+    lists:duplicate(Value, Error).
 
 
 transform_metric(Metric) ->
-    transform_metric(Metric, is_list(proplists:get_value(node, Metric))).
-
-transform_metric(_Metric, _Ignore = true) ->
-    [];
-transform_metric(Metric, _Ignore = false) ->
-    case proplists:get_value(type, Metric) of
-        histogram ->
-            case proplists:get_value(value, Metric) =/= [] of
-                true  -> transform_histogram(Metric);
-                false -> []
-            end;
-        counter   -> transform_counter(Metric);
-        _         -> []
-    end.
-
-transform_counter(Metric) ->
-    case proplists:get_value(key, Metric) of
-        {Scope, {error, {_Type, _Message, _StackTrace}}} when is_binary(Scope) ->
-            case proplists:get_value(value, Metric) of
-                Errors when Errors > 0 ->
-                    [[{[{name, <<"Errors/WebTransaction/Uri", Scope/binary>>},
-                        {scope, <<"">>}]},
-                      [Errors, 0.0, 0.0, 0.0, 0.0, 0.0]
-                     ]];
-                _ ->
-                    []
-            end;
+    case Metric of
+        {{_Scope, total, _Elapsed}, _Value} ->
+            transform_histogram(Metric);
+        {{_Scope, {error, {_, _, _}}}, _Value} ->
+            transform_counter(Metric);
         _ ->
             []
     end.
 
+transform_counter(Metric) ->
+  {{Scope, {error, {_Type, _Message, _StackTrace}}}, Value} = Metric,
+  case Value of
+    Errors when Errors > 0 ->
+        [[{[{name, <<"Errors/WebTransaction/Uri", Scope/binary>>},
+            {scope, <<"">>}]},
+          [Errors, 0.0, 0.0, 0.0, 0.0, 0.0]
+         ]];
+    _ ->
+        []
+  end.
+
 transform_histogram(Metric) ->
-    Summary = statman_histogram:summary(proplists:get_value(value, Metric)),
+    {Key, Value} = Metric,
+    {Scope, Type, Elapsed} = Key,
+    KeyMatch = {Scope, Type},
+    Summary = summary([{Elapsed, Value}]),
     Data = [proplists:get_value(observations, Summary),
             proplists:get_value(sum, Summary) / 1000000,
             proplists:get_value(sum, Summary) / 1000000,
@@ -96,7 +87,7 @@ transform_histogram(Metric) ->
             proplists:get_value(sum2, Summary) / 1000000000
            ],
 
-    case proplists:get_value(key, Metric) of
+    case KeyMatch of
         {Scope, {db, Segment}} when is_binary(Scope) ->
             [
              [{[{name, <<"Database", "/", (to_bin(Segment))/binary>>},
@@ -241,3 +232,42 @@ bgscope2bin(Scope) ->
 
 scope2bin(Url) when is_binary(Url) ->
     <<"WebTransaction/Uri", Url/binary>>.
+
+summary([]) ->
+    [];
+summary(Data) ->
+    {N, Sum, Sum2, Max} = scan(Data),
+
+    [{observations, N},
+     {min, find_quantile(Data, 0)},
+     {max, Max},
+     {sum, Sum},
+     {sum2, Sum2}
+    ].
+
+scan(Data) ->
+    scan(0, 0, 0, 0, Data).
+
+scan(N, Sum, Sum2, Max, []) ->
+    {N, Sum, Sum2, Max};
+scan(N, Sum, Sum2, Max, [{Value, Weight} | Rest]) ->
+    V = Value * Weight,
+    scan(N + Weight,
+         Sum + V,
+         Sum2 + ((Value * Value) * Weight),
+         max(Max, Value),
+         Rest).
+
+find_quantile(Freqs, NeededSamples) ->
+    find_quantile(Freqs, 0, NeededSamples).
+
+find_quantile([{Value, _Freq} | []], _Samples, _NeededSamples) ->
+    Value;
+find_quantile([{Value, Freq} | Rest], Samples, NeededSamples) ->
+    Samples2 = Samples + Freq,
+    if
+        Samples2 < NeededSamples ->
+            find_quantile(Rest, Samples2, NeededSamples);
+        true ->
+            Value
+    end.

@@ -18,6 +18,6 @@ defmodule NewrelicElx.Transaction do
 
   defp record_value!(%__MODULE__{name: name}, data, elapsed) do
     elapsed = round(elapsed / 1000.0) * 1000 # Round to milliseconds
-    :ok = :statman_histogram.record_value({name, data}, elapsed)
+    :ok = Exmetrics.Counter.incr({name, data, elapsed})
   end
 end

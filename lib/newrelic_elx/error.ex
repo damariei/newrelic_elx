@@ -10,6 +10,6 @@ defmodule NewrelicElx.Error do
   stack_trace - optional stack trace
   """
   def record(path, type, message \\ "", stack_trace \\ "") do
-    :statman_counter.incr({path, {:error, {type, message, stack_trace}}})
+    Exmetrics.Counter.incr({path, {:error, {type, message, stack_trace}}})
   end
 end

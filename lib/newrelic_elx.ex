@@ -12,14 +12,14 @@ defmodule NewrelicElx do
   Starts staman process, adds listener to send recorded stats to NewRelic
   """
   def start(_type, _args) do
-    if !Application.get_env(:newrelic, :application_name) || !Application.get_env(:newrelic, :license_key) do
-      Logger.warn "NewRelic not configured. Stopped Monitoring."
-    else
+    # if !Application.get_env(:newrelic, :application_name) || !Application.get_env(:newrelic, :license_key) do
+    #   Logger.warn "NewRelic not configured. Stopped Monitoring."
+    # else
       NewrelicElx.Sup.start_link()
-      :statman_server.add_subscriber(:statman_aggregator)
-      :newrelic_poller.start_link(fn -> :statman_transformer.poll end)
+      #:statman_server.add_subscriber(:statman_aggregator)
+      #:newrelic_poller.start_link(fn -> :newrelic_stats_transformer.poll end)
       Logger.info "Started NewRelic Monitoring."
-    end
+    # end
 
     {:ok, self}
   end

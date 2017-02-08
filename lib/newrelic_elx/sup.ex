@@ -7,7 +7,7 @@ defmodule NewrelicElx.Sup do
 
   def init(:ok) do
     children = [
-      worker(:statman_aggregator, [])
+      worker(NewrelicElx.Poller, [fn -> :newrelic_stats_transformer.poll end])
     ]
     supervise(children, strategy: :one_for_one)
   end
