@@ -1,4 +1,4 @@
-%{"exmetrics": {:git, "https://github.com/damariei/exmetrics.git", "5d3f640ea61ea8b818672d5a064710f8b0b97f43", []},
+%{"exmetrics": {:git, "https://github.com/damariei/exmetrics.git", "5c8f7d98d7619ec36e0a3246a7580afbafe3f95e", []},
   "hoedown": {:git, "https://github.com/hoedown/hoedown.git", "980b9c549b4348d50b683ecee6abee470b98acda", []},
   "httpotion": {:hex, :httpotion, "3.0.2", "525b9bfeb592c914a61a8ee31fdde3871e1861dfe805f8ee5f711f9f11a93483", [:mix], [{:ibrowse, "~> 4.2", [hex: :ibrowse, optional: false]}]},
   "ibrowse": {:hex, :ibrowse, "4.4.0", "2d923325efe0d2cb09b9c6a047b2835a5eda69d8a47ed6ff8bc03628b764e991", [:rebar3], []},
