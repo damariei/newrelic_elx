@@ -31,8 +31,7 @@ defmodule NewrelicElx.Mixfile do
     [ {:httpotion, "~> 3.0.2"},
       {:jiffy, "~> 0.14.11"},
       {:poison, "~> 3.0"},
-      {:exmetrics, "~> 1.0"},
-      {:hdr_histogram, git: "https://github.com/HdrHistogram/hdr_histogram_erl.git"},
+      {:exmetrics, git: "https://github.com/damariei/exmetrics.git"},
       {:plug, "~> 1.0"}
     ]
   end
