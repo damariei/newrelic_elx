@@ -4,7 +4,7 @@ defmodule NewrelicElx.Mixfile do
   def project do
     [ app: :newrelic_elx,
       name: "NewRelic Elixir",
-      version: "0.2.1",
+      version: "0.3.0",
       elixir: "~> 1.2",
       erlc_paths: ["erl"],
       build_embedded: Mix.env == :prod,
