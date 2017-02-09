@@ -32,7 +32,7 @@ defmodule NewrelicElx.Mixfile do
       {:jiffy, "~> 0.14.11"},
       {:poison, "~> 3.0"},
       {:exmetrics, "~> 1.0"},
-      {:hdr_histogram, git: "https://github.com/HdrHistogram/hdr_histogram_erl.git", tag: "0.2.6"},
+      {:hdr_histogram, git: "https://github.com/HdrHistogram/hdr_histogram_erl.git"},
       {:plug, "~> 1.0"}
     ]
   end

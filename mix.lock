@@ -9,7 +9,7 @@
   "fqc": {:git, "https://github.com/project-fifo/fqc.git", "883013e96408f98b29d016fa094b8ac7410c364e", [branch: "master"]},
   "goldrush": {:hex, :goldrush, "0.1.9", "f06e5d5f1277da5c413e84d5a2924174182fb108dabb39d5ec548b27424cd106", [:rebar3], []},
   "hackney": {:hex, :hackney, "1.6.5", "8c025ee397ac94a184b0743c73b33b96465e85f90a02e210e86df6cbafaa5065", [:rebar3], [{:certifi, "0.7.0", [hex: :certifi, optional: false]}, {:idna, "1.2.0", [hex: :idna, optional: false]}, {:metrics, "1.0.1", [hex: :metrics, optional: false]}, {:mimerl, "1.0.2", [hex: :mimerl, optional: false]}, {:ssl_verify_fun, "1.1.1", [hex: :ssl_verify_fun, optional: false]}]},
-  "hdr_histogram": {:git, "https://github.com/HdrHistogram/hdr_histogram_erl.git", "72f8c419181cce7492a8a8b1259c6c06db6ddb08", [tag: "0.2.6"]},
+  "hdr_histogram": {:git, "https://github.com/HdrHistogram/hdr_histogram_erl.git", "46a4f86f3a9b72181859c2a30c8039c5d486248b", []},
   "httpoison": {:hex, :httpoison, "0.10.0", "4727b3a5e57e9a4ff168a3c2883e20f1208103a41bccc4754f15a9366f49b676", [:mix], [{:hackney, "~> 1.6.3", [hex: :hackney, optional: false]}]},
   "httpotion": {:hex, :httpotion, "3.0.2", "525b9bfeb592c914a61a8ee31fdde3871e1861dfe805f8ee5f711f9f11a93483", [:mix], [{:ibrowse, "~> 4.2", [hex: :ibrowse, optional: false]}]},
   "ibrowse": {:hex, :ibrowse, "4.4.0", "2d923325efe0d2cb09b9c6a047b2835a5eda69d8a47ed6ff8bc03628b764e991", [:rebar3], []},
