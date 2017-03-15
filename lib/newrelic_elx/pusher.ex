@@ -62,7 +62,7 @@ defmodule NewrelicElx.Pusher do
     url = newrelic_url_format(collector, :connect)
 
     opts = [%{
-      agent_version: "2.80.1.61",
+      agent_version: "1.5.0.103",
       app_name: app_names(),
       host: hostname,
       identifier: full_app_name(),
